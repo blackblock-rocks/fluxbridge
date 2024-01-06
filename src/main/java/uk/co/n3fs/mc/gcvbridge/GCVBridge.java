@@ -18,6 +18,7 @@ import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.yaml.YAMLConfigurationLoader;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
+import org.javacord.api.entity.intent.Intent;
 import org.slf4j.Logger;
 import uk.co.n3fs.mc.gcvbridge.discord.ChatListener;
 import uk.co.n3fs.mc.gcvbridge.discord.CommandListener;
@@ -131,14 +132,15 @@ public class GCVBridge {
 
         new DiscordApiBuilder()
             .setToken(config.getToken())
+            .addIntents(Intent.MESSAGE_CONTENT)
             .addLostConnectionListener(connListener::onConnectionLost)
             .addReconnectListener(connListener::onReconnect)
             .addResumeListener(connListener::onResume)
             .addMessageCreateListener(commandListener::onPlayerlist)
             .addMessageCreateListener(chatListener::onMessage)
             .login().thenAccept(api -> {
-            dApi = api;
-            logger.info("Connected to Discord!");
+                dApi = api;
+                logger.info("Connected to Discord!");
         });
     }
 

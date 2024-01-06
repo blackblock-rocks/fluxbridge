@@ -52,11 +52,11 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.javacord:javacord:3.1.1'
+    implementation 'org.javacord:javacord:3.7.0'
     implementation 'org.apache.logging.log4j:log4j-to-slf4j:2.11.0'
     implementation 'com.vdurmont:emoji-java:4.0.0'
-    implementation 'dev.vankka:MCDiscordReserializer:4.1.0-SNAPSHOT'
-    implementation 'club.minnced:discord-webhooks:0.5.3'
+    implementation 'dev.vankka:mcdiscordreserializer:4.3.0'
+    implementation 'club.minnced:discord-webhooks:0.8.2'
 
     annotationProcessor 'com.velocitypowered:velocity-api:3.0.1'
     compileOnly 'com.velocitypowered:velocity-api:3.0.1'
@@ -66,7 +66,7 @@ dependencies {
 }
 
 group = 'uk.co.n3fs.mc'
-version = '0.3-SNAPSHOT'
+version = '0.4'
 description = 'gCV-Bridge'
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
