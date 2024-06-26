@@ -1,4 +1,4 @@
-package uk.co.n3fs.mc.gcvbridge.discord;
+package rocks.blackblock.fluxbridge.discord;
 
 import com.vdurmont.emoji.EmojiParser;
 import com.velocitypowered.api.proxy.ProxyServer;
@@ -11,8 +11,8 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
 import org.javacord.api.entity.message.MessageAuthor;
 import org.javacord.api.event.message.MessageCreateEvent;
+import rocks.blackblock.fluxbridge.FluxBridge;
 import rocks.blackblock.fluxchat.api.FluxChatFormat;
-import uk.co.n3fs.mc.gcvbridge.GCVBridge;
 
 public class ChatListener {
 
@@ -20,10 +20,10 @@ public class ChatListener {
             .character('&')
             .extractUrls()
             .build();
-    private final GCVBridge plugin;
+    private final FluxBridge plugin;
     private final ProxyServer proxy;
 
-    public ChatListener(GCVBridge plugin, ProxyServer proxy) {
+    public ChatListener(FluxBridge plugin, ProxyServer proxy) {
         this.plugin = plugin;
         this.proxy = proxy;
     }
@@ -94,7 +94,7 @@ public class ChatListener {
                 .build();
 
         proxy.getAllPlayers().stream()
-                .filter(player -> !plugin.getConfig().isRequireSeePerm() || player.hasPermission("gcvb.see"))
+                .filter(player -> !plugin.getConfig().isRequireSeePerm() || player.hasPermission("fluxbridge.see"))
                 .forEach(player -> player.sendMessage(component));
 
         plugin.getLogger().info(PlainComponentSerializer.plain().serialize(component));

@@ -1,4 +1,4 @@
-package uk.co.n3fs.mc.gcvbridge;
+package rocks.blackblock.fluxbridge;
 
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.PostOrder;
@@ -18,14 +18,14 @@ import org.javacord.api.entity.intent.Intent;
 import org.slf4j.Logger;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
+import rocks.blackblock.fluxbridge.velocity.FluxChatListener;
+import rocks.blackblock.fluxbridge.velocity.VelocityListener;
 import rocks.blackblock.fluxchat.FluxChat;
 import rocks.blackblock.fluxchat.api.FluxChatApi;
-import uk.co.n3fs.mc.gcvbridge.discord.ChatListener;
-import uk.co.n3fs.mc.gcvbridge.discord.CommandListener;
-import uk.co.n3fs.mc.gcvbridge.discord.ConnectionListener;
-import uk.co.n3fs.mc.gcvbridge.velocity.FluxChatListener;
-import uk.co.n3fs.mc.gcvbridge.velocity.NeutronListener;
-import uk.co.n3fs.mc.gcvbridge.velocity.VelocityListener;
+import rocks.blackblock.fluxbridge.discord.ChatListener;
+import rocks.blackblock.fluxbridge.discord.CommandListener;
+import rocks.blackblock.fluxbridge.discord.ConnectionListener;
+import rocks.blackblock.fluxbridge.velocity.NeutronListener;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,30 +34,30 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 @Plugin(
-    id = "gcv-bridge",
-    name = "gChat-Velocity Bridge",
-    authors = "md678685",
-    version = "VERSION", // filled in during build
-    description = "A Discord bridge plugin for gChat for Velocity.",
+    id = "fluxbridge",
+    name = "FluxBridge for FluxChat",
+    authors = {"md678685", "skerit"},
+    version = "@VERSION@", // filled in during build
+    description = "A Discord bridge plugin for FluxChat.",
     dependencies = {
         @Dependency(id = "fluxchat"),
         @Dependency(id = "neutron", optional = true),
         @Dependency(id = "neutron-n3fs", optional = true)
     }
 )
-public class GCVBridge {
+public class FluxBridge {
     @Inject private ProxyServer proxy;
     @Inject private Logger logger;
     @Inject @DataDirectory private Path dataDirectory;
 
-    private GCVBConfig config;
+    private FluxBridgeConfig config;
 
     private FluxChatApi fluxchat_api;
     private DiscordApi discord_api;
 
     @Subscribe(order = PostOrder.LAST)
     public void onProxyInit(ProxyInitializeEvent event) {
-        logger.info("Enabling gCV-Bridge v" + getDescription().getVersion().get());
+        logger.info("Enabling FluxBridge v" + getDescription().getVersion().get());
 
         this.fluxchat_api = FluxChat.getApi();
 
@@ -112,12 +112,12 @@ public class GCVBridge {
         return true;
     }
 
-    private GCVBConfig loadConfig() throws Exception {
+    private FluxBridgeConfig loadConfig() throws Exception {
         ConfigurationNode config = YamlConfigurationLoader.builder()
             .file(getBundledFile("config.yml"))
             .build()
             .load();
-        return new GCVBConfig(this.fluxchat_api, config);
+        return new FluxBridgeConfig(this.fluxchat_api, config);
     }
 
     private void startBot() {
@@ -149,7 +149,7 @@ public class GCVBridge {
 
         if (!file.exists()) {
             dataDirectory.toFile().mkdir();
-            try (InputStream in = GCVBridge.class.getResourceAsStream("/" + name)) {
+            try (InputStream in = FluxBridge.class.getResourceAsStream("/" + name)) {
                 Files.copy(in, file.toPath());
             } catch (IOException e) {
                 e.printStackTrace();
@@ -160,10 +160,10 @@ public class GCVBridge {
     }
 
     private PluginDescription getDescription() {
-        return proxy.getPluginManager().getPlugin("gcv-bridge").map(PluginContainer::getDescription).orElse(null);
+        return proxy.getPluginManager().getPlugin("fluxbridge").map(PluginContainer::getDescription).orElse(null);
     }
 
-    public GCVBConfig getConfig() {
+    public FluxBridgeConfig getConfig() {
         return config;
     }
 
@@ -179,7 +179,7 @@ public class GCVBridge {
         return logger;
     }
 
-    public DiscordApi getDApi() {
+    public DiscordApi getDiscordApi() {
         return this.discord_api;
     }
 

@@ -1,20 +1,20 @@
-package uk.co.n3fs.mc.gcvbridge.discord;
+package rocks.blackblock.fluxbridge.discord;
 
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import org.javacord.api.entity.message.Message;
 import org.javacord.api.event.message.MessageCreateEvent;
-import uk.co.n3fs.mc.gcvbridge.GCVBridge;
+import rocks.blackblock.fluxbridge.FluxBridge;
 
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class CommandListener {
 
-    private final GCVBridge plugin;
+    private final FluxBridge plugin;
     private final ProxyServer proxy;
 
-    public CommandListener(GCVBridge plugin, ProxyServer proxy) {
+    public CommandListener(FluxBridge plugin, ProxyServer proxy) {
         this.plugin = plugin;
         this.proxy = proxy;
     }

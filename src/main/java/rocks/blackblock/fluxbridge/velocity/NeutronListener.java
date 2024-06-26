@@ -1,16 +1,16 @@
-package uk.co.n3fs.mc.gcvbridge.velocity;
+package rocks.blackblock.fluxbridge.velocity;
 
 import com.velocitypowered.api.event.Subscribe;
 import me.crypnotic.neutron.api.event.AlertBroadcastEvent;
 import me.crypnotic.neutron.api.user.User;
 import net.kyori.adventure.text.Component;
-import uk.co.n3fs.mc.gcvbridge.GCVBridge;
-import uk.co.n3fs.mc.gcvbridge.util.TextUtil;
+import rocks.blackblock.fluxbridge.FluxBridge;
+import rocks.blackblock.fluxbridge.util.TextUtil;
 
 public class NeutronListener {
-    private final GCVBridge plugin;
+    private final FluxBridge plugin;
 
-    public NeutronListener(GCVBridge plugin) {
+    public NeutronListener(FluxBridge plugin) {
         this.plugin = plugin;
     }
 
@@ -22,7 +22,7 @@ public class NeutronListener {
                 .replace("{author}", event.getAuthor().map(User::getName).orElse("CONSOLE"));
 
         if (!message.isEmpty()) {
-            plugin.getConfig().getOutChannels(plugin.getDApi())
+            plugin.getConfig().getOutChannels(plugin.getDiscordApi())
                     .forEach(channel -> channel.sendMessage(message));
         }
     }

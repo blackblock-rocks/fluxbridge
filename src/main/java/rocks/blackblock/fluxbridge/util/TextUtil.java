@@ -1,4 +1,4 @@
-package uk.co.n3fs.mc.gcvbridge.util;
+package rocks.blackblock.fluxbridge.util;
 
 import dev.vankka.mcdiscordreserializer.discord.DiscordSerializer;
 import net.kyori.adventure.text.Component;

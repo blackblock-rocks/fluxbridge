@@ -1,4 +1,4 @@
-package uk.co.n3fs.mc.gcvbridge;
+package rocks.blackblock.fluxbridge;
 
 import io.leangen.geantyref.TypeToken;
 import org.javacord.api.DiscordApi;
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class GCVBConfig {
+public class FluxBridgeConfig {
 
     private final ConfigurationNode root;
 
@@ -33,7 +33,7 @@ public class GCVBConfig {
     private final FluxChatFormat gchatInFormat;
     private final String neutronAlertFormat;
 
-    public GCVBConfig(FluxChatApi gcApi, ConfigurationNode root) throws Exception {
+    public FluxBridgeConfig(FluxChatApi gcApi, ConfigurationNode root) throws Exception {
         this.root = root;
 
         token = root.node("discord", "token").getString();

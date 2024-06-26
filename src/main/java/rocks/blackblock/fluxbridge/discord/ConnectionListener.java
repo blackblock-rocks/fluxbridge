@@ -1,4 +1,4 @@
-package uk.co.n3fs.mc.gcvbridge.discord;
+package rocks.blackblock.fluxbridge.discord;
 
 import org.javacord.api.event.connection.LostConnectionEvent;
 import org.javacord.api.event.connection.ReconnectEvent;

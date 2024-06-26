@@ -1,4 +1,4 @@
-package uk.co.n3fs.mc.gcvbridge.velocity;
+package rocks.blackblock.fluxbridge.velocity;
 
 import club.minnced.discord.webhook.WebhookClient;
 import club.minnced.discord.webhook.WebhookClientBuilder;
@@ -11,17 +11,17 @@ import com.velocitypowered.api.proxy.Player;
 import net.kyori.adventure.text.Component;
 import rocks.blackblock.fluxchat.FluxChatPlayer;
 import rocks.blackblock.fluxchat.api.events.FluxChatMessageFormedEvent;
-import uk.co.n3fs.mc.gcvbridge.GCVBridge;
-import uk.co.n3fs.mc.gcvbridge.util.TextUtil;
+import rocks.blackblock.fluxbridge.FluxBridge;
+import rocks.blackblock.fluxbridge.util.TextUtil;
 
 public class FluxChatListener {
 
-    private final GCVBridge plugin;
+    private final FluxBridge plugin;
     private final String webhook;
     private Boolean has_webhook = false;
     private WebhookClient client = null;
 
-    public FluxChatListener(GCVBridge plugin) {
+    public FluxChatListener(FluxBridge plugin) {
         this.plugin = plugin;
 
         this.webhook = plugin.getConfig().getOutWebhook();
@@ -46,9 +46,11 @@ public class FluxChatListener {
     @Subscribe
     public void onGChatMessage(FluxChatMessageFormedEvent event) {
 
+        System.out.println("CHAT: " + event.getRawMessage());
+
         Player player = event.getSender();
 
-        if (plugin.getConfig().isRequireSendPerm() && !player.hasPermission("gcvb.send")) return;
+        if (plugin.getConfig().isRequireSendPerm() && !player.hasPermission("fluxbridge.send")) return;
 
         this.sendToDiscord(player, event.getMessage(), event.getRawMessage());
     }
@@ -115,7 +117,7 @@ public class FluxChatListener {
             this.client.send(builder.build());
         }
 
-        plugin.getConfig().getOutChannels(plugin.getDApi())
+        plugin.getConfig().getOutChannels(plugin.getDiscordApi())
                 .forEach(textChannel -> textChannel.sendMessage(message));
 
     }

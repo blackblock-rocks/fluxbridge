@@ -42,7 +42,7 @@ velocity:
 
 
 # gChat integration settings
-gchat:
+fluxchat:
   # The name of the gChat format to use for incoming messages from Discord.
   # This should be defined in the gChat config.yml, then the name set below.
   # You can create a format just for Discord if you want.
