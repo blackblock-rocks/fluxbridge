@@ -37,12 +37,12 @@ public class CommandListener {
 
         event.getChannel().sendMessage(response).thenAccept(responseMsg -> {
             if (plugin.getConfig().getPlayerlistCommandRemoveDelay() >= 0) {
-                proxy.getScheduler().buildTask(plugin, commandMsg::delete)
+                proxy.getScheduler().buildTask(plugin, () -> responseMsg.delete())
                     .delay(plugin.getConfig().getPlayerlistCommandRemoveDelay(), TimeUnit.SECONDS)
                     .schedule();
             }
             if (plugin.getConfig().getPlayerlistResponseRemoveDelay() >= 0) {
-                proxy.getScheduler().buildTask(plugin, responseMsg::delete)
+                proxy.getScheduler().buildTask(plugin, () -> responseMsg.delete())
                     .delay(plugin.getConfig().getPlayerlistResponseRemoveDelay(), TimeUnit.SECONDS)
                     .schedule();
             }

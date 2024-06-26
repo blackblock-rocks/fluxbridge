@@ -3,7 +3,6 @@ package uk.co.n3fs.mc.gcvbridge.discord;
 import com.vdurmont.emoji.EmojiParser;
 import com.velocitypowered.api.proxy.ProxyServer;
 import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
-import me.lucko.gchat.api.ChatFormat;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -12,6 +11,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
 import org.javacord.api.entity.message.MessageAuthor;
 import org.javacord.api.event.message.MessageCreateEvent;
+import rocks.blackblock.fluxchat.api.FluxChatFormat;
 import uk.co.n3fs.mc.gcvbridge.GCVBridge;
 
 public class ChatListener {
@@ -41,7 +41,9 @@ public class ChatListener {
         if (format == null) return Component.empty();
         String replaced = replacePlaceholders(format, author, "{message}");
         Component convertedMessage = MinecraftSerializer.INSTANCE.serialize(message);
-        return Component.text("").append(LEGACY_LINKING_SERIALIZER.deserialize(replaced).replaceText("{message}", convertedMessage));
+        return Component.text("").append(LEGACY_LINKING_SERIALIZER.deserialize(replaced).replaceText((b) -> {
+            b.matchLiteral("{message}").replacement(convertedMessage);
+        }));
     }
 
     public void onMessage(MessageCreateEvent event) {
@@ -57,7 +59,7 @@ public class ChatListener {
             return;
         }
 
-        ChatFormat format = plugin.getConfig().getInFormat();
+        FluxChatFormat format = plugin.getConfig().getInFormat();
 
         String message = event.getReadableMessageContent();
         message = EmojiParser.parseToAliases(message);

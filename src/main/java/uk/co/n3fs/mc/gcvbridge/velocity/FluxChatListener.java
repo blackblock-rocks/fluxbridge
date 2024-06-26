@@ -8,20 +8,20 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.DisconnectEvent;
 import com.velocitypowered.api.event.connection.LoginEvent;
 import com.velocitypowered.api.proxy.Player;
-import me.lucko.gchat.GChatPlayer;
-import me.lucko.gchat.api.events.GChatMessageFormedEvent;
 import net.kyori.adventure.text.Component;
+import rocks.blackblock.fluxchat.FluxChatPlayer;
+import rocks.blackblock.fluxchat.api.events.FluxChatMessageFormedEvent;
 import uk.co.n3fs.mc.gcvbridge.GCVBridge;
 import uk.co.n3fs.mc.gcvbridge.util.TextUtil;
 
-public class GChatListener {
+public class FluxChatListener {
 
     private final GCVBridge plugin;
     private final String webhook;
     private Boolean has_webhook = false;
     private WebhookClient client = null;
 
-    public GChatListener(GCVBridge plugin) {
+    public FluxChatListener(GCVBridge plugin) {
         this.plugin = plugin;
 
         this.webhook = plugin.getConfig().getOutWebhook();
@@ -44,7 +44,7 @@ public class GChatListener {
     }
 
     @Subscribe
-    public void onGChatMessage(GChatMessageFormedEvent event) {
+    public void onGChatMessage(FluxChatMessageFormedEvent event) {
 
         Player player = event.getSender();
 
@@ -93,7 +93,7 @@ public class GChatListener {
         if (this.has_webhook) {
             WebhookMessageBuilder builder = new WebhookMessageBuilder();
 
-            GChatPlayer gplayer = new GChatPlayer(source);
+            FluxChatPlayer gplayer = new FluxChatPlayer(source);
 
             String name = gplayer.getNickname();
 

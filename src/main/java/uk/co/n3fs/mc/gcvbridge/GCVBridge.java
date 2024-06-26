@@ -12,18 +12,18 @@ import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.plugin.PluginDescription;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
-import me.lucko.gchat.GChat;
-import me.lucko.gchat.api.GChatApi;
-import ninja.leaping.configurate.ConfigurationNode;
-import ninja.leaping.configurate.yaml.YAMLConfigurationLoader;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 import org.javacord.api.entity.intent.Intent;
 import org.slf4j.Logger;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
+import rocks.blackblock.fluxchat.FluxChat;
+import rocks.blackblock.fluxchat.api.FluxChatApi;
 import uk.co.n3fs.mc.gcvbridge.discord.ChatListener;
 import uk.co.n3fs.mc.gcvbridge.discord.CommandListener;
 import uk.co.n3fs.mc.gcvbridge.discord.ConnectionListener;
-import uk.co.n3fs.mc.gcvbridge.velocity.GChatListener;
+import uk.co.n3fs.mc.gcvbridge.velocity.FluxChatListener;
 import uk.co.n3fs.mc.gcvbridge.velocity.NeutronListener;
 import uk.co.n3fs.mc.gcvbridge.velocity.VelocityListener;
 
@@ -40,7 +40,7 @@ import java.nio.file.Path;
     version = "VERSION", // filled in during build
     description = "A Discord bridge plugin for gChat for Velocity.",
     dependencies = {
-        @Dependency(id = "gchat-velocity"),
+        @Dependency(id = "fluxchat"),
         @Dependency(id = "neutron", optional = true),
         @Dependency(id = "neutron-n3fs", optional = true)
     }
@@ -52,14 +52,14 @@ public class GCVBridge {
 
     private GCVBConfig config;
 
-    private GChatApi gcApi;
-    private DiscordApi dApi;
+    private FluxChatApi fluxchat_api;
+    private DiscordApi discord_api;
 
     @Subscribe(order = PostOrder.LAST)
     public void onProxyInit(ProxyInitializeEvent event) {
         logger.info("Enabling gCV-Bridge v" + getDescription().getVersion().get());
 
-        gcApi = GChat.getApi();
+        this.fluxchat_api = FluxChat.getApi();
 
         // Attempt to load config
         try {
@@ -68,11 +68,11 @@ public class GCVBridge {
             throw new RuntimeException("Failed to load config", e);
         }
 
-        proxy.getEventManager().register(this, new GChatListener(this));
-        proxy.getEventManager().register(this, new VelocityListener(this));
+        this.proxy.getEventManager().register(this, new FluxChatListener(this));
+        this.proxy.getEventManager().register(this, new VelocityListener(this));
 
         if (isNeutron()) {
-            proxy.getEventManager().register(this, new NeutronListener(this));
+            this.proxy.getEventManager().register(this, new NeutronListener(this));
         }
 
         startBot();
@@ -82,7 +82,7 @@ public class GCVBridge {
     public void onProxyShutdown(ProxyShutdownEvent event) {
         proxy.getScheduler().buildTask(this, () -> {
             logger.info("Shutting down Discord bot...");
-            dApi.disconnect();
+            this.discord_api.disconnect();
             logger.info("Bot disconnected successfully.");
         }).schedule();
     }
@@ -94,15 +94,15 @@ public class GCVBridge {
     }
 
     public boolean reloadConfig() {
-        final String oldToken = config.getToken();
+        final String oldToken = this.config.getToken();
         try {
-            config = loadConfig();
+            this.config = loadConfig();
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
 
-        if (!config.getToken().equals(oldToken)) {
+        if (!this.config.getToken().equals(oldToken)) {
             logger.info("Bot login details changed - restarting the bot...");
             startBot();
         }
@@ -113,17 +113,17 @@ public class GCVBridge {
     }
 
     private GCVBConfig loadConfig() throws Exception {
-        ConfigurationNode config = YAMLConfigurationLoader.builder()
-            .setFile(getBundledFile("config.yml"))
+        ConfigurationNode config = YamlConfigurationLoader.builder()
+            .file(getBundledFile("config.yml"))
             .build()
             .load();
-        return new GCVBConfig(gcApi, config);
+        return new GCVBConfig(this.fluxchat_api, config);
     }
 
     private void startBot() {
-        if (dApi != null) {
-            dApi.disconnect();
-            dApi = null;
+        if (this.discord_api != null) {
+            this.discord_api.disconnect();
+            this.discord_api = null;
         }
 
         ConnectionListener connListener = new ConnectionListener(logger);
@@ -139,7 +139,7 @@ public class GCVBridge {
             .addMessageCreateListener(commandListener::onPlayerlist)
             .addMessageCreateListener(chatListener::onMessage)
             .login().thenAccept(api -> {
-                dApi = api;
+                this.discord_api = api;
                 logger.info("Connected to Discord!");
         });
     }
@@ -167,12 +167,12 @@ public class GCVBridge {
         return config;
     }
 
-    public GChatApi getGChatApi() {
-        if (gcApi == null) {
-            gcApi = GChat.getApi();
+    public FluxChatApi getGChatApi() {
+        if (this.fluxchat_api == null) {
+            this.fluxchat_api = FluxChat.getApi();
         }
 
-        return gcApi;
+        return this.fluxchat_api;
     }
 
     public Logger getLogger() {
@@ -180,7 +180,7 @@ public class GCVBridge {
     }
 
     public DiscordApi getDApi() {
-        return dApi;
+        return this.discord_api;
     }
 
     private boolean isNeutron() {
