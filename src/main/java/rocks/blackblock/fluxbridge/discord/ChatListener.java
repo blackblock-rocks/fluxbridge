@@ -1,5 +1,6 @@
 package rocks.blackblock.fluxbridge.discord;
 
+import com.google.gson.JsonObject;
 import com.vdurmont.emoji.EmojiParser;
 import com.velocitypowered.api.proxy.ProxyServer;
 import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
@@ -12,6 +13,7 @@ import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
 import org.javacord.api.entity.message.MessageAuthor;
 import org.javacord.api.event.message.MessageCreateEvent;
 import rocks.blackblock.fluxbridge.FluxBridge;
+import rocks.blackblock.fluxchat.FluxChatPlugin;
 import rocks.blackblock.fluxchat.api.FluxChatFormat;
 
 public class ChatListener {
@@ -98,5 +100,16 @@ public class ChatListener {
                 .forEach(player -> player.sendMessage(component));
 
         plugin.getLogger().info(PlainComponentSerializer.plain().serialize(component));
+
+        try {
+            JsonObject data = FluxChatPlugin.createObject("discord_bridge_chat");
+            data.addProperty("message", message);
+            data.addProperty("user_id", author.getIdAsString());
+            data.addProperty("username", author.getName());
+            data.addProperty("timestamp", System.currentTimeMillis());
+            FluxChatPlugin.pushEvent(data);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }

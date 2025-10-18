@@ -80,6 +80,9 @@ public class FluxBridgeConfig {
     }
 
     public List<TextChannel> getInChannels(DiscordApi dApi) {
+        if (inChannels == null || inChannels.isEmpty()) {
+            return List.of();
+        }
         return inChannels.stream()
             .map(dApi::getTextChannelById)
             .filter(Optional::isPresent)
@@ -88,6 +91,9 @@ public class FluxBridgeConfig {
     }
 
     public List<TextChannel> getOutChannels(DiscordApi dApi) {
+        if (outChannels == null || outChannels.isEmpty()) {
+            return List.of();
+        }
         return outChannels.stream()
             .map(dApi::getTextChannelById)
             .filter(Optional::isPresent)
